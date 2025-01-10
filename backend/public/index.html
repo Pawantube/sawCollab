@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socket.IO Test</title>
+    <!-- Ensure you're using the latest version of socket.io client -->
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js" integrity="sha384-mkQ3/7FUtcGyoppY6bz/PORYoGqOl7/aSUMn2ymDOJcapfS6PHqxhRTMh1RR0Q6+" crossorigin="anonymous"></script>
+</head>
+<body>
+    <h1>Socket.IO Real-Time Test</h1>
+    <button id="sendMessageButton">Send Message</button>
+    <ul id="messages"></ul>
+
+    <script>
+        // Connect to the server
+        const socket = io('http://localhost:5000');  // Make sure the URL is correct
+
+        // Listen for messages from the server
+        socket.on('connect', () => {
+            console.log('Connected to the server');
+        });
+
+        socket.on('message', (data) => {
+            console.log('Message received:', data);
+            const messageList = document.getElementById('messages');
+            const newMessage = document.createElement('li');
+            newMessage.textContent = data;
+            messageList.appendChild(newMessage);
+        });
+
+        // Send message when the button is clicked
+        document.getElementById('sendMessageButton').addEventListener('click', () => {
+            const message = 'Hello from the client!';
+            socket.emit('message', message);  // Emit 'message' event with the data
+            console.log('Message sent:', message);  // Log message sent
+        });
+
+        // Handle any error events (optional but useful for debugging)
+        socket.on('connect_error', (error) => {
+            console.log('Connection Error:', error);
+        });
+        
+        socket.on('disconnect', () => {
+            console.log('Disconnected from the server');
+        });
+    </script>
+</body>
+</html>
